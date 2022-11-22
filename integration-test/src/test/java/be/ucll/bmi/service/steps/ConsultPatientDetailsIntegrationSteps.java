@@ -23,5 +23,25 @@ public class ConsultPatientDetailsIntegrationSteps extends IntegrationSteps {
         reset();
     }
 
+    @Given("patient Sara is not registered")
+    public void patient_sara_is_not_registered() {
+    }
+    @When("Martha requests the patient details of Sara")
+    public void martha_requests_the_patient_details_of_sara() {
+        String ssn = Persona.getSsn("Sara");
+        try {
+            patientService.findPatient(ssn);
+        } catch (ServiceException e) {
+            context.addError(e.getMessage());
+        }
+    }
+    @Then("Martha should be given an error message explaining that the requested patient does not exist")
+    public void martha_should_be_given_an_error_message_explaining_that_the_requested_patient_does_not_exist() {
+        List<String> errors = context.getErrors();
+        assertEquals(1, errors.size());
+        assertEquals("patient.does.not.exist", errors.get(0));
+
+    }
+
     
 }
